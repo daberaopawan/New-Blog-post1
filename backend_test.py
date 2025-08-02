@@ -663,6 +663,16 @@ def main():
         ("Get Published Post (Public)", tester.test_get_published_post_public),
         ("Get Non-existent Post", tester.test_get_nonexistent_post),
         ("Image Upload (Unauthorized)", tester.test_image_upload_unauthorized),
+        
+        # NEW ENHANCED FEATURES TESTS
+        ("Save External Image URL", tester.test_save_image_url_endpoint),
+        ("Save Invalid Image URL", tester.test_save_image_url_invalid),
+        ("Search Posts Functionality", tester.test_search_posts_endpoint),
+        ("Tag Filter Functionality", tester.test_tag_filter_endpoint),
+        ("Get All Tags Endpoint", tester.test_get_all_tags_endpoint),
+        ("Combined Search and Tag Filter", tester.test_combined_search_and_tag_filter),
+        ("Rich Content Post Creation", tester.test_rich_content_post_creation),
+        
         ("Delete Post", tester.test_delete_post),
         ("Delete Non-existent Post", tester.test_delete_nonexistent_post)
     ]
