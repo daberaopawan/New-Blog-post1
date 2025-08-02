@@ -270,8 +270,11 @@ async def delete_post(post_id: str, current_user: dict = Depends(get_current_use
     save_json_file(POSTS_FILE, posts)
     return {"message": "Post deleted successfully"}
 
+class ImageUploadRequest(BaseModel):
+    image_url: str
+
 @api_router.post("/admin/upload-image")
-async def upload_image(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+async def upload_image(file: UploadFile = File(None), current_user: dict = Depends(get_current_user)):
     # Validate file type
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
@@ -287,6 +290,15 @@ async def upload_image(file: UploadFile = File(...), current_user: dict = Depend
     
     # Return URL
     return {"url": f"/uploads/{unique_filename}"}
+
+@api_router.post("/admin/save-image-url")
+async def save_image_url(image_data: ImageUploadRequest, current_user: dict = Depends(get_current_user)):
+    # Validate URL format
+    if not image_data.image_url.startswith(('http://', 'https://')):
+        raise HTTPException(status_code=400, detail="Invalid URL format")
+    
+    # Return the URL directly for external images
+    return {"url": image_data.image_url}
 
 @api_router.get("/")
 async def root():
