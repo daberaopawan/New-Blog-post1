@@ -17,5 +17,20 @@
     ],
     "meta_title": "Test Post Meta Title",
     "meta_description": "Test post meta description for SEO"
+  },
+  {
+    "id": "6baec394-5af4-4253-87f7-63cbb56cbe08",
+    "title": "UI Test Blog Post",
+    "slug": "ui-test-blog-post",
+    "content": "This is the main content of the UI test post. It demonstrates that the blog creation workflow is working correctly!",
+    "excerpt": "This is a test post created via UI automation.",
+    "featured_image": null,
+    "author": "Admin",
+    "created_at": "2025-08-02 18:27:49.807278",
+    "updated_at": "2025-08-02 18:27:49.807279",
+    "published": true,
+    "tags": [],
+    "meta_title": null,
+    "meta_description": null
   }
 ]
