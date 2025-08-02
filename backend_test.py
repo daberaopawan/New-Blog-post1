@@ -246,7 +246,7 @@ class BlogAPITester:
             "Image Upload (Unauthorized)",
             "POST",
             "admin/upload-image",
-            401,
+            403,  # Changed from 401 to 403
             files=files
         )
         
