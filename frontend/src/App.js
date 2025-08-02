@@ -847,6 +847,16 @@ function App() {
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/admin/posts/new" element={
+                <ProtectedRoute>
+                  <NewPost />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/posts/edit/:id" element={
+                <ProtectedRoute>
+                  <EditPost />
+                </ProtectedRoute>
+              } />
             </Routes>
           </main>
           <Footer />
