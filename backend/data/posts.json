@@ -1,0 +1,21 @@
+[
+  {
+    "id": "6422e3c9-a5a1-4c54-ae48-2dc0f32f9d76",
+    "title": "Test Post 20250802_182511",
+    "slug": "test-post-20250802182511",
+    "content": "This is a test post content with some <strong>HTML</strong> formatting.",
+    "excerpt": "This is a test post excerpt for testing purposes.",
+    "featured_image": null,
+    "author": "Admin",
+    "created_at": "2025-08-02 18:25:11.097923",
+    "updated_at": "2025-08-02 18:25:11.097925",
+    "published": false,
+    "tags": [
+      "test",
+      "api",
+      "blog"
+    ],
+    "meta_title": "Test Post Meta Title",
+    "meta_description": "Test post meta description for SEO"
+  }
+]
