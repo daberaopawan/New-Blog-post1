@@ -498,7 +498,7 @@ const BlogPostPage = () => {
       </div>
       
       <div className="prose prose-lg max-w-none">
-        <div dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br>') }} />
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
     </article>
   );
