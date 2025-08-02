@@ -277,6 +277,329 @@ class BlogAPITester:
         )
         return success
 
+    # NEW ENHANCED FEATURES TESTS
+    
+    def test_save_image_url_endpoint(self):
+        """Test the new save-image-url endpoint for external images"""
+        image_url_data = {
+            "image_url": "https://via.placeholder.com/600x400/0066cc/ffffff?text=Test+Image"
+        }
+        
+        success, response = self.run_test(
+            "Save External Image URL",
+            "POST",
+            "admin/save-image-url",
+            200,
+            data=image_url_data
+        )
+        
+        if success and 'url' in response:
+            print(f"   External image URL saved: {response['url']}")
+            return True
+        return False
+
+    def test_save_image_url_invalid(self):
+        """Test save-image-url with invalid URL"""
+        invalid_url_data = {
+            "image_url": "not-a-valid-url"
+        }
+        
+        success, _ = self.run_test(
+            "Save Invalid Image URL",
+            "POST",
+            "admin/save-image-url",
+            400,
+            data=invalid_url_data
+        )
+        return success
+
+    def test_search_posts_endpoint(self):
+        """Test the search functionality in posts endpoint"""
+        # First create a post with searchable content
+        search_post_data = {
+            "title": "Rich Features Blog Post",
+            "content": "This post contains rich content with advanced features and technology insights.",
+            "excerpt": "A post about rich features and modern technology.",
+            "published": True,
+            "tags": ["features", "technology", "rich-content"]
+        }
+        
+        success, response = self.run_test(
+            "Create Post for Search Testing",
+            "POST",
+            "admin/posts",
+            200,
+            data=search_post_data
+        )
+        
+        if not success:
+            return False
+            
+        search_post_id = response.get('id')
+        
+        # Test search by title
+        success1, response1 = self.run_test(
+            "Search Posts by 'rich'",
+            "GET",
+            "posts?search=rich",
+            200
+        )
+        
+        # Test search by content
+        success2, response2 = self.run_test(
+            "Search Posts by 'features'",
+            "GET",
+            "posts?search=features",
+            200
+        )
+        
+        # Test search with no results
+        success3, response3 = self.run_test(
+            "Search Posts with No Results",
+            "GET",
+            "posts?search=nonexistentterm",
+            200
+        )
+        
+        if success1 and success2 and success3:
+            print(f"   Search 'rich' found: {len(response1)} posts")
+            print(f"   Search 'features' found: {len(response2)} posts")
+            print(f"   Search 'nonexistentterm' found: {len(response3)} posts")
+            
+            # Clean up the test post
+            if search_post_id:
+                self.run_test(
+                    "Delete Search Test Post",
+                    "DELETE",
+                    f"admin/posts/{search_post_id}",
+                    200
+                )
+            
+            return True
+        return False
+
+    def test_tag_filter_endpoint(self):
+        """Test the tag filtering functionality"""
+        # Create posts with different tags
+        tag_post_data1 = {
+            "title": "Technology Post",
+            "content": "Content about technology trends.",
+            "excerpt": "Technology insights.",
+            "published": True,
+            "tags": ["technology", "trends"]
+        }
+        
+        tag_post_data2 = {
+            "title": "Blogging Tips",
+            "content": "Tips for better blogging.",
+            "excerpt": "Blogging advice.",
+            "published": True,
+            "tags": ["blogging", "tips"]
+        }
+        
+        # Create test posts
+        success1, response1 = self.run_test(
+            "Create Technology Post",
+            "POST",
+            "admin/posts",
+            200,
+            data=tag_post_data1
+        )
+        
+        success2, response2 = self.run_test(
+            "Create Blogging Post",
+            "POST",
+            "admin/posts",
+            200,
+            data=tag_post_data2
+        )
+        
+        if not (success1 and success2):
+            return False
+            
+        post_id1 = response1.get('id')
+        post_id2 = response2.get('id')
+        
+        # Test tag filtering
+        success3, response3 = self.run_test(
+            "Filter Posts by 'technology' tag",
+            "GET",
+            "posts?tag=technology",
+            200
+        )
+        
+        success4, response4 = self.run_test(
+            "Filter Posts by 'blogging' tag",
+            "GET",
+            "posts?tag=blogging",
+            200
+        )
+        
+        success5, response5 = self.run_test(
+            "Filter Posts by non-existent tag",
+            "GET",
+            "posts?tag=nonexistent",
+            200
+        )
+        
+        if success3 and success4 and success5:
+            print(f"   Technology tag found: {len(response3)} posts")
+            print(f"   Blogging tag found: {len(response4)} posts")
+            print(f"   Non-existent tag found: {len(response5)} posts")
+            
+            # Clean up test posts
+            if post_id1:
+                self.run_test("Delete Technology Post", "DELETE", f"admin/posts/{post_id1}", 200)
+            if post_id2:
+                self.run_test("Delete Blogging Post", "DELETE", f"admin/posts/{post_id2}", 200)
+            
+            return True
+        return False
+
+    def test_get_all_tags_endpoint(self):
+        """Test the /api/tags endpoint that returns all available tags"""
+        # First create a post with tags to ensure we have some tags
+        tagged_post_data = {
+            "title": "Tagged Post for Testing",
+            "content": "Content with tags for testing the tags endpoint.",
+            "excerpt": "Testing tags endpoint.",
+            "published": True,
+            "tags": ["api-test", "tags", "endpoint"]
+        }
+        
+        success1, response1 = self.run_test(
+            "Create Tagged Post",
+            "POST",
+            "admin/posts",
+            200,
+            data=tagged_post_data
+        )
+        
+        if not success1:
+            return False
+            
+        post_id = response1.get('id')
+        
+        # Test the tags endpoint
+        success2, response2 = self.run_test(
+            "Get All Tags",
+            "GET",
+            "tags",
+            200
+        )
+        
+        if success2 and 'tags' in response2:
+            print(f"   Available tags: {response2['tags']}")
+            
+            # Clean up test post
+            if post_id:
+                self.run_test("Delete Tagged Post", "DELETE", f"admin/posts/{post_id}", 200)
+            
+            return True
+        return False
+
+    def test_combined_search_and_tag_filter(self):
+        """Test combined search and tag filtering"""
+        # Create a post that matches both search and tag criteria
+        combined_post_data = {
+            "title": "Advanced Features in Modern Technology",
+            "content": "This post discusses advanced features and rich content capabilities in modern technology platforms.",
+            "excerpt": "Advanced features and technology insights.",
+            "published": True,
+            "tags": ["features", "technology", "advanced"]
+        }
+        
+        success1, response1 = self.run_test(
+            "Create Combined Test Post",
+            "POST",
+            "admin/posts",
+            200,
+            data=combined_post_data
+        )
+        
+        if not success1:
+            return False
+            
+        post_id = response1.get('id')
+        
+        # Test combined search and tag filter
+        success2, response2 = self.run_test(
+            "Combined Search and Tag Filter",
+            "GET",
+            "posts?search=features&tag=technology",
+            200
+        )
+        
+        if success2:
+            print(f"   Combined filter found: {len(response2)} posts")
+            
+            # Clean up test post
+            if post_id:
+                self.run_test("Delete Combined Test Post", "DELETE", f"admin/posts/{post_id}", 200)
+            
+            return True
+        return False
+
+    def test_rich_content_post_creation(self):
+        """Test creating a post with rich HTML content"""
+        rich_content = """
+        <h2>Rich Content Example</h2>
+        <p>This post demonstrates <strong>rich content</strong> capabilities including:</p>
+        <ul>
+            <li><em>Italic text</em></li>
+            <li><strong>Bold text</strong></li>
+            <li><a href="https://example.com">Links</a></li>
+        </ul>
+        <blockquote>
+            This is a quote block to test rich formatting.
+        </blockquote>
+        <pre><code>console.log('Code block example');</code></pre>
+        """
+        
+        rich_post_data = {
+            "title": "Rich Content Test Post",
+            "content": rich_content,
+            "excerpt": "A post testing rich HTML content rendering.",
+            "published": True,
+            "tags": ["rich-content", "html", "formatting"],
+            "featured_image": "https://via.placeholder.com/800x400/0066cc/ffffff?text=Rich+Content"
+        }
+        
+        success, response = self.run_test(
+            "Create Rich Content Post",
+            "POST",
+            "admin/posts",
+            200,
+            data=rich_post_data
+        )
+        
+        if success and 'id' in response:
+            post_id = response['id']
+            post_slug = response['slug']
+            print(f"   Rich content post created with slug: {post_slug}")
+            
+            # Test retrieving the rich content post
+            success2, response2 = self.run_test(
+                "Get Rich Content Post",
+                "GET",
+                f"posts/{post_slug}",
+                200
+            )
+            
+            if success2:
+                print(f"   Rich content post retrieved successfully")
+                # Verify the HTML content is preserved
+                if '<h2>' in response2.get('content', '') and '<strong>' in response2.get('content', ''):
+                    print(f"   ✅ HTML formatting preserved in content")
+                else:
+                    print(f"   ⚠️  HTML formatting may not be preserved")
+            
+            # Clean up
+            self.run_test("Delete Rich Content Post", "DELETE", f"admin/posts/{post_id}", 200)
+            return success and success2
+        
+        return False
+
     def check_file_storage(self):
         """Check if file storage directories exist"""
         print(f"\n🔍 Checking File Storage System...")
