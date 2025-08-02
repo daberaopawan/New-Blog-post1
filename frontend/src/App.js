@@ -447,6 +447,8 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
   const [metaDescription, setMetaDescription] = useState('');
   const [published, setPublished] = useState(false);
   const [featuredImage, setFeaturedImage] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadMode, setUploadMode] = useState('file'); // 'file' or 'url'
   const [loading, setLoading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const { token } = useAuth();
@@ -501,6 +503,46 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
     } finally {
       setImageUploading(false);
     }
+  };
+
+  const handleImageUrl = async () => {
+    if (!imageUrl.trim()) return;
+
+    setImageUploading(true);
+    try {
+      const response = await axios.post(`${API}/admin/save-image-url`, 
+        { image_url: imageUrl }, 
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
+      setFeaturedImage(response.data.url);
+      setImageUrl('');
+    } catch (error) {
+      console.error('Error saving image URL:', error);
+      alert('Failed to save image URL. Please check the URL and try again.');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const insertFormatting = (before, after = '') => {
+    const textarea = document.getElementById('content-textarea');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+    const beforeText = content.substring(0, start);
+    const afterText = content.substring(end);
+    
+    const newContent = beforeText + before + selectedText + after + afterText;
+    setContent(newContent);
+    
+    // Reset cursor position
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(
+        start + before.length, 
+        start + before.length + selectedText.length
+      );
+    }, 0);
   };
 
   const handleSubmit = async (e, shouldPublish = false) => {
@@ -583,38 +625,193 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content *
+                Content * 
+                <span className="text-sm text-gray-500 ml-2">
+                  Use the formatting buttons below to add HTML formatting
+                </span>
               </label>
+              
+              {/* Rich Text Formatting Toolbar */}
+              <div className="flex flex-wrap gap-2 mb-2 p-3 bg-gray-50 rounded-lg border">
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<h2>', '</h2>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Heading 2"
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<h3>', '</h3>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Heading 3"
+                >
+                  H3
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<strong>', '</strong>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-bold"
+                  title="Bold"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<em>', '</em>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm italic"
+                  title="Italic"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<a href="">', '</a>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Link"
+                >
+                  Link
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<ul>\n<li>', '</li>\n</ul>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Bullet List"
+                >
+                  • List
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<ol>\n<li>', '</li>\n</ol>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Numbered List"
+                >
+                  1. List
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<blockquote>', '</blockquote>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Quote"
+                >
+                  Quote
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<code>', '</code>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-mono"
+                  title="Inline Code"
+                >
+                  Code
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<pre><code>', '</code></pre>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Code Block"
+                >
+                  Code Block
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertFormatting('<br>')}
+                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  title="Line Break"
+                >
+                  Break
+                </button>
+              </div>
+
               <textarea
+                id="content-textarea"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
                 rows="12"
                 required
-                placeholder="Write your blog post content here. You can use basic HTML tags."
+                placeholder="Write your blog post content here. Use the formatting buttons above or add HTML tags manually."
               />
+              
+              <div className="mt-2 text-xs text-gray-500">
+                Preview: Your content will be rendered with HTML formatting on the blog post page.
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Featured Image
               </label>
+              
+              {/* Image Upload Mode Selector */}
+              <div className="flex space-x-4 mb-3">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="file"
+                    checked={uploadMode === 'file'}
+                    onChange={(e) => setUploadMode(e.target.value)}
+                    className="mr-2"
+                  />
+                  Upload File
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="url"
+                    checked={uploadMode === 'url'}
+                    onChange={(e) => setUploadMode(e.target.value)}
+                    className="mr-2"
+                  />
+                  Use URL
+                </label>
+              </div>
+
               <div className="space-y-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  disabled={imageUploading}
-                />
-                {imageUploading && <p className="text-sm text-gray-500">Uploading image...</p>}
+                {uploadMode === 'file' ? (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={imageUploading}
+                  />
+                ) : (
+                  <div className="flex space-x-2">
+                    <input
+                      type="url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      disabled={imageUploading}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleImageUrl}
+                      disabled={imageUploading || !imageUrl.trim()}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    >
+                      Add URL
+                    </button>
+                  </div>
+                )}
+                
+                {imageUploading && <p className="text-sm text-gray-500">Processing image...</p>}
                 {featuredImage && (
                   <div className="mt-2">
                     <img 
-                      src={`${BACKEND_URL}${featuredImage}`} 
+                      src={featuredImage.startsWith('http') ? featuredImage : `${BACKEND_URL}${featuredImage}`} 
                       alt="Featured" 
                       className="w-32 h-32 object-cover rounded border"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setFeaturedImage('')}
+                      className="mt-1 text-sm text-red-600 hover:text-red-800"
+                    >
+                      Remove Image
+                    </button>
                   </div>
                 )}
               </div>
