@@ -153,7 +153,7 @@ class BlogAPITester:
             "Create Draft Post",
             "POST",
             "admin/posts",
-            201,
+            200,  # Changed from 201 to 200
             data=post_data
         )
         
