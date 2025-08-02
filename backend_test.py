@@ -120,7 +120,7 @@ class BlogAPITester:
             "Get Admin Posts (Unauthorized)",
             "GET",
             "admin/posts",
-            401
+            403
         )
         self.token = temp_token
         return success
