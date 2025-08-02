@@ -437,7 +437,286 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-// Admin Dashboard (placeholder)
+// Blog Post Editor Component
+const BlogPostEditor = ({ isEdit = false, postId = null }) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [excerpt, setExcerpt] = useState('');
+  const [tags, setTags] = useState('');
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [published, setPublished] = useState(false);
+  const [featuredImage, setFeaturedImage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isEdit && postId) {
+      fetchPost();
+    }
+  }, [isEdit, postId]);
+
+  const fetchPost = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/posts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const post = response.data.find(p => p.id === postId);
+      if (post) {
+        setTitle(post.title);
+        setContent(post.content);
+        setExcerpt(post.excerpt);
+        setTags(post.tags.join(', '));
+        setMetaTitle(post.meta_title || '');
+        setMetaDescription(post.meta_description || '');
+        setPublished(post.published);
+        setFeaturedImage(post.featured_image || '');
+      }
+    } catch (error) {
+      console.error('Error fetching post:', error);
+    }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    setImageUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post(`${API}/admin/upload-image`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setFeaturedImage(response.data.url);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e, shouldPublish = false) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const postData = {
+      title,
+      content,
+      excerpt,
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      meta_title: metaTitle || null,
+      meta_description: metaDescription || null,
+      published: shouldPublish || published,
+      featured_image: featuredImage || null
+    };
+
+    try {
+      if (isEdit) {
+        await axios.put(`${API}/admin/posts/${postId}`, postData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } else {
+        await axios.post(`${API}/admin/posts`, postData, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      }
+      navigate('/admin');
+    } catch (error) {
+      console.error('Error saving post:', error);
+      alert('Failed to save post. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="mb-8">
+        <Link to="/admin" className="text-blue-600 hover:text-blue-800 mb-4 inline-block">
+          ← Back to Dashboard
+        </Link>
+        <h1 className="text-4xl font-bold text-gray-900">
+          {isEdit ? 'Edit Post' : 'Create New Post'}
+        </h1>
+      </div>
+
+      <form onSubmit={(e) => handleSubmit(e)} className="space-y-6">
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Post Content</h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Title *
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required
+                placeholder="Enter your blog post title"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Excerpt *
+              </label>
+              <textarea
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows="3"
+                required
+                placeholder="Brief description of your post"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Content *
+              </label>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows="12"
+                required
+                placeholder="Write your blog post content here. You can use basic HTML tags."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Featured Image
+              </label>
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={imageUploading}
+                />
+                {imageUploading && <p className="text-sm text-gray-500">Uploading image...</p>}
+                {featuredImage && (
+                  <div className="mt-2">
+                    <img 
+                      src={`${BACKEND_URL}${featuredImage}`} 
+                      alt="Featured" 
+                      className="w-32 h-32 object-cover rounded border"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tags
+              </label>
+              <input
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter tags separated by commas (e.g., technology, programming, web)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">SEO Settings</h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Meta Title
+              </label>
+              <input
+                type="text"
+                value={metaTitle}
+                onChange={(e) => setMetaTitle(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="SEO-friendly title (defaults to post title)"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Meta Description
+              </label>
+              <textarea
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows="3"
+                placeholder="Brief description for search engines"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Publishing</h2>
+          
+          <div className="flex items-center space-x-3 mb-6">
+            <input
+              type="checkbox"
+              id="published"
+              checked={published}
+              onChange={(e) => setPublished(e.target.checked)}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <label htmlFor="published" className="text-sm font-medium text-gray-700">
+              Publish immediately
+            </label>
+          </div>
+
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              onClick={(e) => handleSubmit(e, false)}
+              disabled={loading}
+              className="px-6 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Saving...' : 'Save as Draft'}
+            </button>
+            <button
+              type="button"
+              onClick={(e) => handleSubmit(e, true)}
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? 'Publishing...' : 'Publish'}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// New Post Component
+const NewPost = () => <BlogPostEditor />;
+
+// Edit Post Component  
+const EditPost = () => {
+  const { id } = useParams();
+  return <BlogPostEditor isEdit={true} postId={id} />;
+};
+
+// Admin Dashboard
 const AdminDashboard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -457,6 +736,22 @@ const AdminDashboard = () => {
       console.error('Error fetching admin posts:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (postId) => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/admin/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPosts(posts.filter(p => p.id !== postId));
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post. Please try again.');
     }
   };
 
@@ -518,6 +813,12 @@ const AdminDashboard = () => {
                   >
                     View
                   </Link>
+                  <button
+                    onClick={() => handleDelete(post.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
