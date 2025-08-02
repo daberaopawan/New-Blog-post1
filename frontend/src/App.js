@@ -157,7 +157,7 @@ const HomePage = () => {
               <article key={post.id} className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow">
                 {post.featured_image && (
                   <img 
-                    src={`${BACKEND_URL}${post.featured_image}`}
+                    src={post.featured_image.startsWith('http') ? post.featured_image : `${BACKEND_URL}${post.featured_image}`}
                     alt={post.title}
                     className="w-full h-48 object-cover rounded-t-xl"
                   />
