@@ -182,13 +182,35 @@ async def login(login_request: LoginRequest):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.get("/posts", response_model=List[BlogPost])
-async def get_posts(published_only: bool = True):
+async def get_posts(published_only: bool = True, search: Optional[str] = None, tag: Optional[str] = None):
     posts = load_json_file(POSTS_FILE)
     if published_only:
         posts = [p for p in posts if p.get("published", False)]
+    
+    # Apply search filter
+    if search:
+        search_lower = search.lower()
+        posts = [p for p in posts if 
+                search_lower in p.get("title", "").lower() or 
+                search_lower in p.get("content", "").lower() or
+                search_lower in p.get("excerpt", "").lower()]
+    
+    # Apply tag filter
+    if tag:
+        posts = [p for p in posts if tag.lower() in [t.lower() for t in p.get("tags", [])]]
+    
     # Sort by created_at desc
     posts.sort(key=lambda x: x.get("created_at", ""), reverse=True)
     return posts
+
+@api_router.get("/tags")
+async def get_all_tags():
+    posts = load_json_file(POSTS_FILE)
+    all_tags = set()
+    for post in posts:
+        if post.get("published", False):
+            all_tags.update(post.get("tags", []))
+    return {"tags": sorted(list(all_tags))}
 
 @api_router.get("/posts/{slug}")
 async def get_post_by_slug(slug: str):
