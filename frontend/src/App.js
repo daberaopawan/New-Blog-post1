@@ -192,14 +192,23 @@ const HomePage = () => {
   );
 };
 
-// Blog Listing Page
+// Blog Listing Page with Search and Filter
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+  const [allTags, setAllTags] = useState([]);
 
   useEffect(() => {
     fetchPosts();
+    fetchTags();
   }, []);
+
+  useEffect(() => {
+    filterPosts();
+  }, [posts, searchQuery, selectedTag]);
 
   const fetchPosts = async () => {
     try {
@@ -210,6 +219,58 @@ const BlogPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchTags = async () => {
+    try {
+      const response = await axios.get(`${API}/tags`);
+      setAllTags(response.data.tags);
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+    }
+  };
+
+  const filterPosts = () => {
+    let filtered = [...posts];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(post =>
+        post.title.toLowerCase().includes(query) ||
+        post.content.toLowerCase().includes(query) ||
+        post.excerpt.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply tag filter
+    if (selectedTag) {
+      filtered = filtered.filter(post =>
+        post.tags.some(tag => tag.toLowerCase() === selectedTag.toLowerCase())
+      );
+    }
+
+    setFilteredPosts(filtered);
+  };
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedTag('');
+  };
+
+  const highlightText = (text, query) => {
+    if (!query.trim()) return text;
+    
+    const regex = new RegExp(`(${query})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) =>
+      regex.test(part) ? (
+        <mark key={index} className="bg-yellow-200">{part}</mark>
+      ) : (
+        part
+      )
+    );
   };
 
   if (loading) {
@@ -224,13 +285,94 @@ const BlogPage = () => {
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold text-gray-900 mb-8">All Blog Posts</h1>
       
-      {posts.length === 0 ? (
-        <div className="text-center py-12 text-gray-600">
-          <p>No posts available yet. Check back soon!</p>
+      {/* Search and Filter Section */}
+      <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Search Input */}
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Search Posts
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Search by title, content, or excerpt..."
+            />
+          </div>
+
+          {/* Tag Filter */}
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Filter by Tag
+            </label>
+            <select
+              value={selectedTag}
+              onChange={(e) => setSelectedTag(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">All Tags</option>
+              {allTags.map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Clear Filters Button */}
+          <div className="flex items-end">
+            <button
+              onClick={clearFilters}
+              disabled={!searchQuery && !selectedTag}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+        </div>
+
+        {/* Filter Results Info */}
+        <div className="mt-4 text-sm text-gray-600">
+          {searchQuery || selectedTag ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <span>Showing {filteredPosts.length} of {posts.length} posts</span>
+              {searchQuery && (
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                  Search: "{searchQuery}"
+                </span>
+              )}
+              {selectedTag && (
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
+                  Tag: {selectedTag}
+                </span>
+              )}
+            </div>
+          ) : (
+            <span>Showing all {posts.length} posts</span>
+          )}
+        </div>
+      </div>
+      
+      {filteredPosts.length === 0 ? (
+        <div className="text-center py-12 text-gray-600 bg-white rounded-xl border">
+          {searchQuery || selectedTag ? (
+            <div>
+              <p className="text-lg mb-2">No posts found matching your criteria.</p>
+              <p>Try adjusting your search or filter options.</p>
+              <button
+                onClick={clearFilters}
+                className="mt-4 text-blue-600 hover:text-blue-800 underline"
+              >
+                Clear all filters
+              </button>
+            </div>
+          ) : (
+            <p>No posts available yet. Check back soon!</p>
+          )}
         </div>
       ) : (
         <div className="space-y-8">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <article key={post.id} className="bg-white rounded-xl shadow-sm border p-8 hover:shadow-md transition-shadow">
               <div className="flex items-center text-sm text-gray-500 mb-3">
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
@@ -241,18 +383,30 @@ const BlogPage = () => {
                     <span className="mx-2">•</span>
                     <div className="flex space-x-2">
                       {post.tags.map((tag, index) => (
-                        <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs">
+                        <button
+                          key={index}
+                          onClick={() => setSelectedTag(tag)}
+                          className={`px-2 py-1 rounded text-xs transition-colors ${
+                            selectedTag === tag
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
                           {tag}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </>
                 )}
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors">
-                <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                <Link to={`/blog/${post.slug}`}>
+                  {searchQuery ? highlightText(post.title, searchQuery) : post.title}
+                </Link>
               </h2>
-              <p className="text-gray-600 mb-6">{post.excerpt}</p>
+              <p className="text-gray-600 mb-6">
+                {searchQuery ? highlightText(post.excerpt, searchQuery) : post.excerpt}
+              </p>
               <Link 
                 to={`/blog/${post.slug}`}
                 className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
