@@ -88,5 +88,35 @@
     ],
     "meta_title": "Enhanced Blog Features: Rich Content & Advanced Search - Demo",
     "meta_description": "Explore the new blog features including rich HTML content editing, flexible image uploads, and advanced search with tag filtering."
+  },
+  {
+    "id": "442e1bbd-0cee-4c12-9f19-d16525983862",
+    "title": "Bandu is the smartest",
+    "slug": "bandu-is-the-smartest",
+    "content": "Bandu is the smartest",
+    "excerpt": "Bandu is the smartest",
+    "featured_image": "/uploads/d5af5eef-806a-4d09-bb70-05e596469b86.jpg",
+    "author": "Admin",
+    "created_at": "2025-08-03 14:12:58.739290",
+    "updated_at": "2025-08-03 14:12:58.739297",
+    "published": true,
+    "tags": [],
+    "meta_title": null,
+    "meta_description": null
+  },
+  {
+    "id": "a7449f7c-7ac3-4887-b8e3-6c8d2fce7829",
+    "title": "Image url test",
+    "slug": "image-url-test",
+    "content": "Image url test",
+    "excerpt": "Image url test",
+    "featured_image": "https://i.postimg.cc/26bpH5Kn/ETYUTL0a9q-M-HD.jpg",
+    "author": "Admin",
+    "created_at": "2025-08-03 14:15:09.958596",
+    "updated_at": "2025-08-03T14:17:44.066125",
+    "published": true,
+    "tags": [],
+    "meta_title": null,
+    "meta_description": null
   }
 ]
