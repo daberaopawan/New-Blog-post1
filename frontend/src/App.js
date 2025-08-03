@@ -65,7 +65,7 @@ const Header = () => {
           <nav className="flex items-center space-x-6">
             <Link to="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</Link>
             <Link to="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</Link>
-            {isAuthenticated ? (
+            {/* {isAuthenticated ? (
               <>
                 <Link to="/admin" className="text-blue-600 hover:text-blue-800 transition-colors">Admin</Link>
                 <button 
@@ -77,7 +77,7 @@ const Header = () => {
               </>
             ) : (
               <Link to="/login" className="text-blue-600 hover:text-blue-800 transition-colors">Login</Link>
-            )}
+            )} */}
           </nav>
         </div>
       </div>
@@ -576,10 +576,6 @@ const LoginPage = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>Default credentials: admin / admin123</p>
-        </div>
       </div>
     </div>
   );
