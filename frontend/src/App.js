@@ -69,8 +69,8 @@ const Header = () => {
             <ul className="flex justify-center space-x-8">
               <li><Link to="/" className="font-sans uppercase text-xs tracking-wider hover:underline">Home</Link></li>
               <li><Link to="/blog" className="font-sans uppercase text-xs tracking-wider hover:underline">Blog</Link></li>
-              <li><a href="/about" className="font-sans uppercase text-xs tracking-wider hover:underline">About</a></li>
-              <li><a href="/contact" className="font-sans uppercase text-xs tracking-wider hover:underline">Contact</a></li>
+              <li><Link to="/about" className="font-sans uppercase text-xs tracking-wider hover:underline">About</Link></li>
+              <li><Link to="/contact" className="font-sans uppercase text-xs tracking-wider hover:underline">Contact</Link></li>
               {isAuthenticated && (
                 <>
                   <li><Link to="/admin" className="font-sans uppercase text-xs tracking-wider hover:underline">Admin</Link></li>
