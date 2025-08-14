@@ -101,16 +101,15 @@ const Footer = () => {
           <div className="mb-6">
             <div className="text-3xl font-serif font-normal tracking-tighter mb-4">Ruhmani</div>
             <div className="flex justify-center space-x-8">
-              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Instagram</a>
+              <a href="https://www.instagram.com/ruhmanistudio" className="font-sans uppercase text-xs tracking-wider hover:underline">Instagram</a>
               <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Twitter</a>
               <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Facebook</a>
               <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Pinterest</a>
             </div>
           </div>
-          
           <div className="text-center text-xs text-gray-600">
-            <p className="mb-2">© 2025 Ruhmani. All rights reserved.</p>
-            <p>Designed with love in Bharat 🇮🇳 	&#x1f1ee;&#x1f1f3; </p>
+            <p className="mb-2">© 2025 Ruhmani Studio. All rights reserved.</p>
+            <p>Designed with love in Bharat 🇮🇳</p>
           </div>
         </div>
       </div>
