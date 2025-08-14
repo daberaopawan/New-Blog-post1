@@ -110,7 +110,7 @@ const Footer = () => {
           
           <div className="text-center text-xs text-gray-600">
             <p className="mb-2">© 2025 Ruhmani. All rights reserved.</p>
-            <p>Designed with love in New York</p>
+            <p>Designed with love in Bharat 🇮🇳 	&#x1f1ee;&#x1f1f3; </p>
           </div>
         </div>
       </div>
@@ -389,6 +389,14 @@ const AboutPage = () => {
       <div className="mb-12 text-center">
         <h1 className="text-3xl font-serif font-normal mb-4">About</h1>
         <p className="text-gray-700 max-w-2xl mx-auto">Thoughts on technology, design, and life.</p>
+        <br></br>
+        <div>
+          <p>Welcome to Ruhmani your one-stop hub for ideas that matter.
+            From the latest in AI and technology to deep dives into finance, geopolitics, science, space, and even local politics, we bring you clear, engaging, and insightful stories that keep you informed and inspired.
+            We believe knowledge should be simple, accessible, and impactful—whether you’re tracking the stock market, exploring nature, or decoding the future of tech.
+            Stay curious. Stay ahead. 🚀
+          </p>
+        </div>
       </div>
         
     </div>
@@ -401,7 +409,20 @@ const ContactPage = () => {
     <div className="max-w-screen-xl mx-auto px-5 py-8">
       <div className="mb-12 text-center">
         <h1 className="text-3xl font-serif font-normal mb-4">Contact</h1>
-        <p className="text-gray-700 max-w-2xl mx-auto">Get in touch with us.</p>
+        <p className="text-gray-700 max-w-2xl mx-auto">Get in touch with us.</p><br></br>
+        <div>
+          <p>Got a question, idea, or feedback? We’d love to hear from you.</p><br></br>
+              <p>Whether it’s about AI, technology, finance, science, or anything we write about, your thoughts help us create better stories.</p><br></br>
+              <ul>
+                <li>
+                  📩 Email: info@ruhmani.com
+                </li>
+                <li>
+                  🌐 Social: https://www.instagram.com/ruhmanistudio
+                </li>
+              </ul><br></br>
+              <p>We read every message—because great conversations start with a simple hello.</p>
+        </div>
       </div>
     </div>
   );
