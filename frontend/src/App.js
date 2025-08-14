@@ -51,33 +51,40 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-// Header Component
+// Header Component - Cup of Jo style
 const Header = () => {
   const { isAuthenticated, logout } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm border-b">
-      <div className="max-w-6xl mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
-            My Personal Blog
-          </Link>
-          <nav className="flex items-center space-x-6">
-            <Link to="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</Link>
-            <Link to="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</Link>
-            {/* {isAuthenticated ? (
-              <>
-                <Link to="/admin" className="text-blue-600 hover:text-blue-800 transition-colors">Admin</Link>
-                <button 
-                  onClick={logout}
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link to="/login" className="text-blue-600 hover:text-blue-800 transition-colors">Login</Link>
-            )} */}
+    <header className="bg-white">
+      <div className="max-w-screen-xl mx-auto px-5 py-6">
+        <div className="flex flex-col items-center">
+          <div className="mb-6">
+            <Link to="/" className="text-4xl font-serif font-normal tracking-tighter">
+              Ruhmani
+            </Link>
+          </div>
+          
+          <nav className="w-full border-t border-b border-gray-300 py-4">
+            <ul className="flex justify-center space-x-8">
+              <li><Link to="/" className="font-sans uppercase text-xs tracking-wider hover:underline">Home</Link></li>
+              <li><Link to="/blog" className="font-sans uppercase text-xs tracking-wider hover:underline">Blog</Link></li>
+              <li><a href="/about" className="font-sans uppercase text-xs tracking-wider hover:underline">About</a></li>
+              <li><a href="/contact" className="font-sans uppercase text-xs tracking-wider hover:underline">Contact</a></li>
+              {isAuthenticated && (
+                <>
+                  <li><Link to="/admin" className="font-sans uppercase text-xs tracking-wider hover:underline">Admin</Link></li>
+                  <li>
+                    <button 
+                      onClick={logout}
+                      className="font-sans uppercase text-xs tracking-wider hover:underline"
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              )}
+            </ul>
           </nav>
         </div>
       </div>
@@ -85,20 +92,33 @@ const Header = () => {
   );
 };
 
-// Footer Component  
+// Footer Component - Cup of Jo style
 const Footer = () => {
   return (
-    <footer className="bg-gray-50 border-t mt-16">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="text-center text-gray-600">
-          <p>&copy; 2025 My Personal Blog. All rights reserved.</p>
+    <footer className="bg-gray-100 py-12 mt-16">
+      <div className="max-w-screen-xl mx-auto px-5">
+        <div className="flex flex-col items-center">
+          <div className="mb-6">
+            <div className="text-3xl font-serif font-normal tracking-tighter mb-4">Ruhmani</div>
+            <div className="flex justify-center space-x-8">
+              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Instagram</a>
+              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Twitter</a>
+              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Facebook</a>
+              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Pinterest</a>
+            </div>
+          </div>
+          
+          <div className="text-center text-xs text-gray-600">
+            <p className="mb-2">© 2025 Ruhmani. All rights reserved.</p>
+            <p>Designed with love in New York</p>
+          </div>
         </div>
       </div>
     </footer>
   );
 };
 
-// Home Page
+// Home Page - Cup of Jo style
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -110,7 +130,7 @@ const HomePage = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`${API}/posts`);
-      setPosts(response.data.slice(0, 3)); // Show only 3 latest posts
+      setPosts(response.data.slice(0, 6));
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
@@ -120,79 +140,95 @@ const HomePage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center py-16">
         <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Hero Section */}
-      <section className="text-center py-16 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl mb-16">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">
-          Welcome to My Blog
-        </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-          Discover insights, stories, and thoughts on technology, life, and everything in between.
-        </p>
-        <Link 
-          to="/blog"
-          className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-        >
-          Explore All Posts
-        </Link>
-      </section>
-
-      {/* Featured Posts Section */}
-      <section>
-        <h2 className="text-3xl font-bold text-gray-900 mb-8">Latest Posts</h2>
-        {posts.length === 0 ? (
-          <div className="text-center py-12 text-gray-600">
-            <p>No posts available yet. Check back soon!</p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {posts.map((post) => (
-              <article key={post.id} className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-shadow">
-                {post.featured_image && (
-                  <img 
-                    src={post.featured_image.startsWith('http') ? post.featured_image : `${BACKEND_URL}${post.featured_image}`}
-                    alt={post.title}
-                    className="w-full h-48 object-cover rounded-t-xl"
-                  />
-                )}
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 mb-3">
-                    <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                    {post.tags.length > 0 && (
-                      <>
-                        <span className="mx-2">•</span>
-                        <span>{post.tags[0]}</span>
-                      </>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3 hover:text-blue-600 transition-colors">
-                    <Link to={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                  <Link 
-                    to={`/blog/${post.slug}`}
-                    className="text-blue-600 font-medium hover:text-blue-800 transition-colors"
-                  >
-                    Read More →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+    <div className="max-w-screen-xl mx-auto px-5 py-8">
+      {/* Featured Post */}
+      {posts.length > 0 && (
+        <div className="mb-16 border-b border-gray-300 pb-16">
+          <article className="mb-8">
+            {posts[0].featured_image && (
+              <Link to={`/blog/${posts[0].slug}`} className="block mb-6">
+                <img 
+                  src={posts[0].featured_image.startsWith('http') ? posts[0].featured_image : `${BACKEND_URL}${posts[0].featured_image}`}
+                  alt={posts[0].title}
+                  className="w-full h-96 object-cover"
+                />
+              </Link>
+            )}
+            <div className="text-xs text-gray-500 mb-3 uppercase tracking-wider font-sans">
+              <span>{new Date(posts[0].created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+            </div>
+            <h2 className="text-3xl font-serif font-normal mb-4">
+              <Link to={`/blog/${posts[0].slug}`} className="hover:underline">{posts[0].title}</Link>
+            </h2>
+            <p className="text-gray-700 mb-6">{posts[0].excerpt}</p>
+            <Link 
+              to={`/blog/${posts[0].slug}`}
+              className="inline-block font-sans uppercase text-xs tracking-wider hover:underline"
+            >
+              Continue Reading
+            </Link>
+          </article>
+        </div>
+      )}
+      
+      {/* More Posts */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        {posts.slice(1).map((post) => (
+          <article key={post.id} className="mb-12">
+            {post.featured_image && (
+              <Link to={`/blog/${post.slug}`} className="block mb-4">
+                <img 
+                  src={post.featured_image.startsWith('http') ? post.featured_image : `${BACKEND_URL}${post.featured_image}`}
+                  alt={post.title}
+                  className="w-full h-56 object-cover"
+                />
+              </Link>
+            )}
+            <div className="text-xs text-gray-500 mb-2 uppercase tracking-wider font-sans">
+              <span>{new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+            </div>
+            <h3 className="text-xl font-serif font-normal mb-3">
+              <Link to={`/blog/${post.slug}`} className="hover:underline">{post.title}</Link>
+            </h3>
+            <Link 
+              to={`/blog/${post.slug}`}
+              className="inline-block font-sans uppercase text-xs tracking-wider hover:underline"
+            >
+              Continue Reading
+            </Link>
+          </article>
+        ))}
+      </div>
+      
+      {/* Newsletter Signup */}
+      <div className="bg-gray-100 py-12 mb-16">
+        <div className="max-w-xl mx-auto text-center">
+          <h3 className="text-2xl font-serif font-normal mb-4">Join the Newsletter</h3>
+          <p className="text-gray-700 mb-6">Sign up to get the latest posts and updates delivered directly to your inbox.</p>
+          <form className="flex flex-col sm:flex-row gap-4">
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              className="flex-1 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500 text-sm"
+            />
+            <button className="px-6 py-2 bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm font-sans uppercase tracking-wider">
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
 
-// Blog Listing Page with Search and Filter
+// Blog Listing Page - Cup of Jo style
 const BlogPage = () => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -233,7 +269,6 @@ const BlogPage = () => {
   const filterPosts = () => {
     let filtered = [...posts];
 
-    // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(post =>
@@ -243,7 +278,6 @@ const BlogPage = () => {
       );
     }
 
-    // Apply tag filter
     if (selectedTag) {
       filtered = filtered.filter(post =>
         post.tags.some(tag => tag.toLowerCase() === selectedTag.toLowerCase())
@@ -258,160 +292,87 @@ const BlogPage = () => {
     setSelectedTag('');
   };
 
-  const highlightText = (text, query) => {
-    if (!query.trim()) return text;
-    
-    const regex = new RegExp(`(${query})`, 'gi');
-    const parts = text.split(regex);
-    
-    return parts.map((part, index) =>
-      regex.test(part) ? (
-        <mark key={index} className="bg-yellow-200">{part}</mark>
-      ) : (
-        part
-      )
-    );
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center py-16">
         <div className="text-gray-600">Loading posts...</div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">All Blog Posts</h1>
+    <div className="max-w-screen-xl mx-auto px-5 py-8">
+      <div className="mb-12 text-center">
+        <h1 className="text-3xl font-serif font-normal mb-4">Blog</h1>
+        <p className="text-gray-700 max-w-2xl mx-auto">Thoughts on technology, design, and life.</p>
+      </div>
       
       {/* Search and Filter Section */}
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Search Input */}
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Search Posts
-            </label>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Search by title, content, or excerpt..."
-            />
-          </div>
-
-          {/* Tag Filter */}
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Filter by Tag
-            </label>
-            <select
-              value={selectedTag}
-              onChange={(e) => setSelectedTag(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">All Tags</option>
-              {allTags.map(tag => (
-                <option key={tag} value={tag}>{tag}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Clear Filters Button */}
-          <div className="flex items-end">
-            <button
-              onClick={clearFilters}
-              disabled={!searchQuery && !selectedTag}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Clear Filters
-            </button>
-          </div>
+      <div className="mb-12 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="w-full md:w-auto">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500 text-sm"
+            placeholder="Search posts..."
+          />
         </div>
 
-        {/* Filter Results Info */}
-        <div className="mt-4 text-sm text-gray-600">
-          {searchQuery || selectedTag ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <span>Showing {filteredPosts.length} of {posts.length} posts</span>
-              {searchQuery && (
-                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
-                  Search: "{searchQuery}"
-                </span>
-              )}
-              {selectedTag && (
-                <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-                  Tag: {selectedTag}
-                </span>
-              )}
-            </div>
-          ) : (
-            <span>Showing all {posts.length} posts</span>
-          )}
+        <div className="w-full md:w-auto">
+          <select
+            value={selectedTag}
+            onChange={(e) => setSelectedTag(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500 text-sm"
+          >
+            <option value="">All Topics</option>
+            {allTags.map(tag => (
+              <option key={tag} value={tag}>{tag}</option>
+            ))}
+          </select>
         </div>
       </div>
       
       {filteredPosts.length === 0 ? (
-        <div className="text-center py-12 text-gray-600 bg-white rounded-xl border">
+        <div className="text-center py-12 text-gray-600">
           {searchQuery || selectedTag ? (
             <div>
-              <p className="text-lg mb-2">No posts found matching your criteria.</p>
-              <p>Try adjusting your search or filter options.</p>
+              <p className="mb-4">No posts found matching your criteria.</p>
               <button
                 onClick={clearFilters}
-                className="mt-4 text-blue-600 hover:text-blue-800 underline"
+                className="text-gray-900 hover:underline font-sans text-sm"
               >
-                Clear all filters
+                View all posts
               </button>
             </div>
           ) : (
-            <p>No posts available yet. Check back soon!</p>
+            <p>No posts available yet.</p>
           )}
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post) => (
-            <article key={post.id} className="bg-white rounded-xl shadow-sm border p-8 hover:shadow-md transition-shadow">
-              <div className="flex items-center text-sm text-gray-500 mb-3">
-                <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                <span className="mx-2">•</span>
-                <span>By {post.author}</span>
-                {post.tags.length > 0 && (
-                  <>
-                    <span className="mx-2">•</span>
-                    <div className="flex space-x-2">
-                      {post.tags.map((tag, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setSelectedTag(tag)}
-                          className={`px-2 py-1 rounded text-xs transition-colors ${
-                            selectedTag === tag
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
-                        >
-                          {tag}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4 hover:text-blue-600 transition-colors">
-                <Link to={`/blog/${post.slug}`}>
-                  {searchQuery ? highlightText(post.title, searchQuery) : post.title}
+            <article key={post.id} className="mb-12">
+              {post.featured_image && (
+                <Link to={`/blog/${post.slug}`} className="block mb-4">
+                  <img 
+                    src={post.featured_image.startsWith('http') ? post.featured_image : `${BACKEND_URL}${post.featured_image}`}
+                    alt={post.title}
+                    className="w-full h-56 object-cover"
+                  />
                 </Link>
+              )}
+              <div className="text-xs text-gray-500 mb-2 uppercase tracking-wider font-sans">
+                <span>{new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+              <h2 className="text-xl font-serif font-normal mb-3">
+                <Link to={`/blog/${post.slug}`} className="hover:underline">{post.title}</Link>
               </h2>
-              <p className="text-gray-600 mb-6">
-                {searchQuery ? highlightText(post.excerpt, searchQuery) : post.excerpt}
-              </p>
               <Link 
                 to={`/blog/${post.slug}`}
-                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                className="inline-block font-sans uppercase text-xs tracking-wider hover:underline"
               >
-                Read Full Post
+                Continue Reading
               </Link>
             </article>
           ))}
@@ -421,7 +382,31 @@ const BlogPage = () => {
   );
 };
 
-// Individual Blog Post Page
+// About  Page - Cup of Jo style
+const AboutPage = () => {
+  return (
+    <div className="max-w-screen-xl mx-auto px-5 py-8">
+      <div className="mb-12 text-center">
+        <h1 className="text-3xl font-serif font-normal mb-4">About</h1>
+        <p className="text-gray-700 max-w-2xl mx-auto">Thoughts on technology, design, and life.</p>
+      </div>
+        
+    </div>
+  );
+};
+
+// Contact  Page - Cup of Jo style
+const ContactPage = () => {
+  return (
+    <div className="max-w-screen-xl mx-auto px-5 py-8">
+      <div className="mb-12 text-center">
+        <h1 className="text-3xl font-serif font-normal mb-4">Contact</h1>
+        <p className="text-gray-700 max-w-2xl mx-auto">Get in touch with us.</p>
+      </div>
+    </div>
+  );
+};
+// Individual Blog Post Page - Cup of Jo style
 const BlogPostPage = () => {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
@@ -446,7 +431,7 @@ const BlogPostPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center py-16">
         <div className="text-gray-600">Loading post...</div>
       </div>
     );
@@ -454,57 +439,57 @@ const BlogPostPage = () => {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center py-16">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Post Not Found</h1>
-          <p className="text-gray-600 mb-8">The post you're looking for doesn't exist.</p>
-          <Link to="/blog" className="text-blue-600 hover:text-blue-800">← Back to Blog</Link>
+          <h1 className="text-3xl font-serif font-normal mb-4">Post Not Found</h1>
+          <p className="text-gray-700 mb-8">The post you're looking for doesn't exist.</p>
+          <Link to="/blog" className="text-gray-900 hover:underline">← Back to Blog</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <article className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <Link to="/blog" className="text-blue-600 hover:text-blue-800 mb-4 inline-block">
-          ← Back to Blog
-        </Link>
-        <div className="flex items-center text-sm text-gray-500 mb-4">
-          <span>{new Date(post.created_at).toLocaleDateString()}</span>
-          <span className="mx-2">•</span>
-          <span>By {post.author}</span>
-          {post.tags.length > 0 && (
-            <>
-              <span className="mx-2">•</span>
-              <div className="flex space-x-2">
-                {post.tags.map((tag, index) => (
-                  <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </>
-          )}
+    <article className="max-w-screen-md mx-auto px-5 py-8">
+      <div className="mb-12">
+        <div className="text-xs text-gray-500 mb-4 uppercase tracking-wider font-sans">
+          <span>{new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
         </div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-6">{post.title}</h1>
+        <h1 className="text-4xl font-serif font-normal mb-6">{post.title}</h1>
         {post.featured_image && (
           <img 
             src={post.featured_image.startsWith('http') ? post.featured_image : `${BACKEND_URL}${post.featured_image}`}
             alt={post.title}
-            className="w-full h-64 object-cover rounded-xl mb-8"
+            className="w-full mb-8"
           />
         )}
       </div>
       
-      <div className="prose prose-lg max-w-none">
+      <div className="prose max-w-none mb-16">
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      </div>
+      
+      <div className="border-t border-gray-300 pt-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-4 font-sans">Share This Post</h3>
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-700 hover:text-gray-900">Twitter</a>
+              <a href="#" className="text-gray-700 hover:text-gray-900">Facebook</a>
+              <a href="#" className="text-gray-700 hover:text-gray-900">Pinterest</a>
+              <a href="#" className="text-gray-700 hover:text-gray-900">Email</a>
+            </div>
+          </div>
+          <div>
+            <Link to="/blog" className="text-gray-900 hover:underline font-sans">← Back to Blog</Link>
+          </div>
+        </div>
       </div>
     </article>
   );
 };
 
-// Login Page
+// Login Page - Cup of Jo style
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -531,9 +516,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-sm border p-8">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Admin Login</h2>
+    <div className="min-h-screen flex items-center justify-center py-16">
+      <div className="max-w-md w-full">
+        <h2 className="text-2xl font-serif font-normal text-center mb-8">Admin Login</h2>
         
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
@@ -543,27 +528,27 @@ const LoginPage = () => {
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm text-gray-700 mb-2 font-sans">
               Username
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm text-gray-700 mb-2 font-sans">
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
               required
             />
           </div>
@@ -571,7 +556,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="w-full bg-gray-900 text-white py-3 px-4 hover:bg-gray-800 disabled:opacity-50 transition-colors font-sans"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
@@ -587,7 +572,7 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-// Blog Post Editor Component
+// Blog Post Editor Component - Fixed and Improved UI
 const BlogPostEditor = ({ isEdit = false, postId = null }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -598,7 +583,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
   const [published, setPublished] = useState(false);
   const [featuredImage, setFeaturedImage] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [uploadMode, setUploadMode] = useState('file'); // 'file' or 'url'
+  const [uploadMode, setUploadMode] = useState('file');
   const [loading, setLoading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const { token } = useAuth();
@@ -685,7 +670,6 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
     const newContent = beforeText + before + selectedText + after + afterText;
     setContent(newContent);
     
-    // Reset cursor position
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(
@@ -730,43 +714,43 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-screen-md mx-auto px-5 py-8">
       <div className="mb-8">
-        <Link to="/admin" className="text-blue-600 hover:text-blue-800 mb-4 inline-block">
+        <Link to="/admin" className="text-gray-900 hover:underline mb-4 inline-block font-sans">
           ← Back to Dashboard
         </Link>
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1 className="text-2xl font-serif font-normal mb-6">
           {isEdit ? 'Edit Post' : 'Create New Post'}
         </h1>
       </div>
 
-      <form onSubmit={(e) => handleSubmit(e)} className="space-y-6">
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Post Content</h2>
+      <form onSubmit={(e) => handleSubmit(e)} className="space-y-8">
+        <div className="bg-white p-6 border border-gray-200 rounded-sm">
+          <h2 className="text-lg font-serif font-normal mb-4">Post Content</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Title *
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
                 required
                 placeholder="Enter your blog post title"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Excerpt *
               </label>
               <textarea
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
                 rows="3"
                 required
                 placeholder="Brief description of your post"
@@ -774,19 +758,15 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Content * 
-                <span className="text-sm text-gray-500 ml-2">
-                  Use the formatting buttons below to add HTML formatting
-                </span>
               </label>
               
-              {/* Rich Text Formatting Toolbar */}
-              <div className="flex flex-wrap gap-2 mb-2 p-3 bg-gray-50 rounded-lg border">
+              <div className="flex flex-wrap gap-2 mb-2 p-3 bg-gray-100 border">
                 <button
                   type="button"
                   onClick={() => insertFormatting('<h2>', '</h2>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  className="px-3 py-1 bg-white border text-sm"
                   title="Heading 2"
                 >
                   H2
@@ -794,7 +774,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 <button
                   type="button"
                   onClick={() => insertFormatting('<h3>', '</h3>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  className="px-3 py-1 bg-white border text-sm"
                   title="Heading 3"
                 >
                   H3
@@ -802,7 +782,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 <button
                   type="button"
                   onClick={() => insertFormatting('<strong>', '</strong>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-bold"
+                  className="px-3 py-1 bg-white border font-bold text-sm"
                   title="Bold"
                 >
                   B
@@ -810,7 +790,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 <button
                   type="button"
                   onClick={() => insertFormatting('<em>', '</em>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm italic"
+                  className="px-3 py-1 bg-white border italic text-sm"
                   title="Italic"
                 >
                   I
@@ -818,7 +798,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 <button
                   type="button"
                   onClick={() => insertFormatting('<a href="">', '</a>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  className="px-3 py-1 bg-white border text-sm"
                   title="Link"
                 >
                   Link
@@ -826,7 +806,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 <button
                   type="button"
                   onClick={() => insertFormatting('<ul>\n<li>', '</li>\n</ul>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  className="px-3 py-1 bg-white border text-sm"
                   title="Bullet List"
                 >
                   • List
@@ -834,42 +814,10 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 <button
                   type="button"
                   onClick={() => insertFormatting('<ol>\n<li>', '</li>\n</ol>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
+                  className="px-3 py-1 bg-white border text-sm"
                   title="Numbered List"
                 >
                   1. List
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertFormatting('<blockquote>', '</blockquote>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-                  title="Quote"
-                >
-                  Quote
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertFormatting('<code>', '</code>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm font-mono"
-                  title="Inline Code"
-                >
-                  Code
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertFormatting('<pre><code>', '</code></pre>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-                  title="Code Block"
-                >
-                  Code Block
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertFormatting('<br>')}
-                  className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-                  title="Line Break"
-                >
-                  Break
                 </button>
               </div>
 
@@ -877,23 +825,18 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 id="content-textarea"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500 font-mono text-sm"
                 rows="12"
                 required
-                placeholder="Write your blog post content here. Use the formatting buttons above or add HTML tags manually."
+                placeholder="Write your blog post content here..."
               />
-              
-              <div className="mt-2 text-xs text-gray-500">
-                Preview: Your content will be rendered with HTML formatting on the blog post page.
-              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Featured Image
               </label>
               
-              {/* Image Upload Mode Selector */}
               <div className="flex space-x-4 mb-3">
                 <label className="flex items-center">
                   <input
@@ -917,48 +860,54 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
                 </label>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {uploadMode === 'file' ? (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    disabled={imageUploading}
-                  />
-                ) : (
-                  <div className="flex space-x-2">
+                  <div>
                     <input
-                      type="url"
-                      value={imageUrl}
-                      onChange={(e) => setImageUrl(e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="w-full"
                       disabled={imageUploading}
                     />
-                    <button
-                      type="button"
-                      onClick={handleImageUrl}
-                      disabled={imageUploading || !imageUrl.trim()}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                    >
-                      Add URL
-                    </button>
+                    {imageUploading && <p className="mt-2 text-sm text-gray-500">Uploading image...</p>}
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex space-x-2">
+                      <input
+                        type="url"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        placeholder="https://example.com/image.jpg"
+                        className="flex-1 px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                        disabled={imageUploading}
+                      />
+                      <button
+                        type="button"
+                        onClick={handleImageUrl}
+                        disabled={imageUploading || !imageUrl.trim()}
+                        className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 transition-colors font-sans"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    {imageUploading && <p className="mt-2 text-sm text-gray-500">Saving image URL...</p>}
                   </div>
                 )}
                 
-                {imageUploading && <p className="text-sm text-gray-500">Processing image...</p>}
                 {featuredImage && (
-                  <div className="mt-2">
+                  <div className="mt-4">
+                    <div className="text-sm text-gray-700 mb-2">Current Image:</div>
                     <img 
                       src={featuredImage.startsWith('http') ? featuredImage : `${BACKEND_URL}${featuredImage}`} 
                       alt="Featured" 
-                      className="w-32 h-32 object-cover rounded border"
+                      className="w-full max-w-xs h-auto object-contain border p-2"
                     />
                     <button
                       type="button"
                       onClick={() => setFeaturedImage('')}
-                      className="mt-1 text-sm text-red-600 hover:text-red-800"
+                      className="mt-2 text-sm text-gray-900 hover:underline font-sans"
                     >
                       Remove Image
                     </button>
@@ -968,45 +917,48 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Tags
+                <span className="text-gray-500 ml-1">(comma separated)</span>
               </label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter tags separated by commas (e.g., technology, programming, web)"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                placeholder="technology, programming, web"
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">SEO Settings</h2>
+        <div className="bg-white p-6 border border-gray-200 rounded-sm">
+          <h2 className="text-lg font-serif font-normal mb-4">SEO Settings</h2>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Meta Title
+                <span className="text-gray-500 ml-1">(optional)</span>
               </label>
               <input
                 type="text"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="SEO-friendly title (defaults to post title)"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
+                placeholder="SEO title (defaults to post title)"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm text-gray-700 mb-2 font-sans">
                 Meta Description
+                <span className="text-gray-500 ml-1">(optional)</span>
               </label>
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-gray-500"
                 rows="3"
                 placeholder="Brief description for search engines"
               />
@@ -1014,8 +966,8 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Publishing</h2>
+        <div className="bg-white p-6 border border-gray-200 rounded-sm">
+          <h2 className="text-lg font-serif font-normal mb-4">Publishing</h2>
           
           <div className="flex items-center space-x-3 mb-6">
             <input
@@ -1023,9 +975,9 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
               id="published"
               checked={published}
               onChange={(e) => setPublished(e.target.checked)}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-500"
             />
-            <label htmlFor="published" className="text-sm font-medium text-gray-700">
+            <label htmlFor="published" className="text-sm text-gray-700 font-sans">
               Publish immediately
             </label>
           </div>
@@ -1035,7 +987,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
               type="button"
               onClick={(e) => handleSubmit(e, false)}
               disabled={loading}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 disabled:opacity-50 transition-colors"
+              className="px-6 py-3 bg-gray-300 text-gray-900 hover:bg-gray-400 disabled:opacity-50 transition-colors font-sans"
             >
               {loading ? 'Saving...' : 'Save as Draft'}
             </button>
@@ -1043,7 +995,7 @@ const BlogPostEditor = ({ isEdit = false, postId = null }) => {
               type="button"
               onClick={(e) => handleSubmit(e, true)}
               disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 transition-colors font-sans"
             >
               {loading ? 'Publishing...' : 'Publish'}
             </button>
@@ -1063,7 +1015,7 @@ const EditPost = () => {
   return <BlogPostEditor isEdit={true} postId={id} />;
 };
 
-// Admin Dashboard
+// Admin Dashboard - Cup of Jo style
 const AdminDashboard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1104,27 +1056,27 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center py-16">
         <div className="text-gray-600">Loading dashboard...</div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
+    <div className="max-w-screen-md mx-auto px-5 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h1 className="text-2xl font-serif font-normal">Admin Dashboard</h1>
         <Link 
           to="/admin/posts/new"
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          className="px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 transition-colors font-sans"
         >
           New Post
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <div className="px-6 py-4 border-b bg-gray-50">
-          <h2 className="text-xl font-semibold text-gray-900">All Posts</h2>
+      <div className="border border-gray-300">
+        <div className="px-6 py-4 border-b border-gray-300 bg-gray-100">
+          <h2 className="text-lg font-serif font-normal">All Posts</h2>
         </div>
         
         {posts.length === 0 ? (
@@ -1132,12 +1084,12 @@ const AdminDashboard = () => {
             <p>No posts yet. Create your first post!</p>
           </div>
         ) : (
-          <div className="divide-y">
+          <div className="divide-y divide-gray-300">
             {posts.map((post) => (
-              <div key={post.id} className="px-6 py-4 flex justify-between items-center">
+              <div key={post.id} className="px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <h3 className="font-medium text-gray-900">{post.title}</h3>
-                  <div className="text-sm text-gray-500 mt-1">
+                  <div className="text-sm text-gray-500 mt-1 font-sans">
                     {post.published ? (
                       <span className="text-green-600">Published</span>
                     ) : (
@@ -1147,16 +1099,16 @@ const AdminDashboard = () => {
                     <span>{new Date(post.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <div className="flex space-x-3">
+                <div className="flex space-x-3 font-sans">
                   <Link 
                     to={`/admin/posts/edit/${post.id}`}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="text-gray-900 hover:underline"
                   >
                     Edit
                   </Link>
                   <Link 
                     to={`/blog/${post.slug}`}
-                    className="text-gray-600 hover:text-gray-800"
+                    className="text-gray-900 hover:underline"
                   >
                     View
                   </Link>
@@ -1181,13 +1133,15 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-white">
           <Header />
           <main>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/admin" element={
                 <ProtectedRoute>
