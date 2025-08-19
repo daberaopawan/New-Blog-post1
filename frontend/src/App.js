@@ -101,10 +101,10 @@ const Footer = () => {
           <div className="mb-6">
             <div className="text-3xl font-serif font-normal tracking-tighter mb-4">Ruhmani</div>
             <div className="flex justify-center space-x-8">
-              <a href="https://www.instagram.com/ruhmanistudio" className="font-sans uppercase text-xs tracking-wider hover:underline">Instagram</a>
+              <a href="https://www.instagram.com/coded.midnight/" className="font-sans uppercase text-xs tracking-wider hover:underline">Instagram</a>
               <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Twitter</a>
-              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Facebook</a>
-              <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Pinterest</a>
+              <a href="https://www.tumblr.com/codedmidnightsworld?source=share" className="font-sans uppercase text-xs tracking-wider hover:underline">Tumblr</a>
+              <a href="https://in.pinterest.com/codedmidnight/?invite_code=08959a64f1044f25a7194e99c4dff2c8&sender=880453933309634835" className="font-sans uppercase text-xs tracking-wider hover:underline">Pinterest</a>
             </div>
           </div>
           <div className="text-center text-xs text-gray-600">
