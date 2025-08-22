@@ -79,7 +79,7 @@ const Header = () => {
                       onClick={logout}
                       className="font-sans uppercase text-xs tracking-wider hover:underline"
                     >
-                      Logout
+                        Logout
                     </button>
                   </li>
                 </>
