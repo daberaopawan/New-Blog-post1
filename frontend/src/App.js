@@ -109,7 +109,7 @@ const Footer = () => {
           </div>
           <div className="text-center text-xs text-gray-600">
             <p className="mb-2">© 2025 Ruhmani Studio. All rights reserved.</p>
-            <p>Designed with love in Bharat 🇮🇳</p>
+            <p>Designed with love in Bharat 🇮🇳 </p>
           </div>
         </div>
       </div>
