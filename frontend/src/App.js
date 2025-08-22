@@ -99,7 +99,7 @@ const Footer = () => {
       <div className="max-w-screen-xl mx-auto px-5">
         <div className="flex flex-col items-center">
           <div className="mb-6">
-            <div className="text-3xl font-serif font-normal tracking-tighter mb-4">Ruhmani</div>
+            <div className="text-3xl font-serif font-normal tracking-tighter mb-4">Ruhmani </div>
             <div className="flex justify-center space-x-8">
               <a href="https://www.instagram.com/coded.midnight/" className="font-sans uppercase text-xs tracking-wider hover:underline">Instagram</a>
               <a href="#" className="font-sans uppercase text-xs tracking-wider hover:underline">Twitter</a>
